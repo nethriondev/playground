@@ -4,7 +4,6 @@ using namespace std;
 int main()
 {
     int option, num;
-    cout << "Name: Kenneth Panio" << endl;
     cout << "SELECT OPTIONS" << endl;
     cout << "1. Fibonacci" << endl;
     cout << "2. Palindrome" << endl;
@@ -140,19 +139,3 @@ int main()
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
