@@ -23,9 +23,7 @@ int main() {
     cout << "Name: " << name << endl;
     cout << "Course: " << course << endl;
     cout << "Average: " << average << endl;
-   // cout << "Status: " << (average >= 75 ? "Passed" : "Failed"); // Ternary Operator
-   
-   // conditional if-else statement
+
     if (average >= 75) {
         cout << "Status: Passed";
      } else {

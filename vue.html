@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js Login Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-600 to-indigo-700 min-h-screen flex items-center justify-center p-4">
+    <div id="app" class="w-full max-w-md">
+        <div class="bg-white rounded-2xl shadow-2xl p-8">
+            <!-- Header - dynamic icon -->
+            <div class="text-center mb-8">
+                <div class="text-4xl text-indigo-600 mb-2">
+                    <i :class="['fas', headerIcon]"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-800">{{ headerTitle }}</h2>
+            </div>
+            
+            <!-- Dynamic Content -->
+            <div v-if="!isLoggedIn">
+                <!-- Login Form -->
+                <template v-for="(field, index) in loginFields">
+                    <div :key="index" class="mb-6">
+                        <label class="block text-gray-700 text-sm font-semibold mb-2">
+                            <i :class="['fas', field.icon, 'mr-2 text-indigo-500']"></i>{{ field.label }}
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                                <i :class="['fas', field.icon]"></i>
+                            </div>
+                            <input 
+                                :type="field.type"
+                                v-model="credentials[field.model]"
+                                :disabled="isBlocked"
+                                @keyup.enter="login"
+                                class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition disabled:bg-gray-100"
+                                :placeholder="field.placeholder"
+                            >
+                        </div>
+                    </div>
+                </template>
+                
+                <!-- Dynamic Buttons -->
+                <button 
+                    @click="login" 
+                    :disabled="isBlocked || isLoading"
+                    :class="['w-full font-bold py-3 px-4 rounded-lg transition mb-4 flex items-center justify-center gap-2', buttonClass]"
+                >
+                    <i :class="['fas', isLoading ? 'fa-circle-notch fa-spin' : 'fa-sign-in-alt']"></i>
+                    <span>{{ isLoading ? 'Logging in...' : 'Login' }}</span>
+                </button>
+                
+                <!-- Dynamic Messages -->
+                <div v-if="attempts > 0 && !isBlocked" class="text-center text-sm text-gray-600 mb-2">
+                    <i class="fas fa-exclamation-triangle text-yellow-500 mr-1"></i>
+                    Attempts: <span class="font-semibold">{{ attempts }}/3</span>
+                </div>
+                
+                <div v-if="errorMessage" class="text-center text-sm p-3 rounded-lg" :class="messageClass">
+                    <i :class="['fas', messageIcon, 'mr-1']"></i> {{ errorMessage }}
+                </div>
+            </div>
+            
+            <!-- Greeting Section -->
+            <div v-else>
+                <div class="text-center mb-6">
+                    <div class="text-5xl text-indigo-600 mb-3">
+                        <i class="fas fa-smile-wink"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-indigo-600">
+                        <i class="fas fa-hand-peace mr-2"></i>
+                        Hello, {{ capsUsername }}!
+                    </h3>
+                </div>
+                
+                <!-- Guess Section -->
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">
+                        <i class="fas fa-question-circle mr-2 text-indigo-500"></i>
+                        Enter any number and I'll try to guess it:
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                            <i class="fas fa-hashtag"></i>
+                        </div>
+                        <input 
+                            type="number" 
+                            v-model.number="guessNumber"
+                            :disabled="isGuessing"
+                            @keyup.enter="guess"
+                            class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition disabled:bg-gray-100"
+                            placeholder="Enter a number"
+                        >
+                    </div>
+                </div>
+                
+                <button 
+                    @click="guess" 
+                    :disabled="isGuessing || !guessNumber"
+                    :class="['w-full font-bold py-3 px-4 rounded-lg transition mb-4 flex items-center justify-center gap-2', guessButtonClass]"
+                >
+                    <i :class="['fas', isGuessing ? 'fa-circle-notch fa-spin' : 'fa-magic']"></i>
+                    <span>{{ isGuessing ? 'Guessing...' : 'Guess My Number!' }}</span>
+                </button>
+                
+                <div v-if="guessMessage" class="text-gray-700 p-4 bg-gray-50 rounded-lg font-mono text-center">
+                    <i class="fas fa-robot text-indigo-500 mr-2"></i>
+                    {{ guessMessage }}
+                </div>
+            </div>
+            
+            <!-- Dynamic Footer Buttons/Messages -->
+            <button 
+                v-if="isBlocked" 
+                @click="reset" 
+                class="w-full mt-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition text-sm flex items-center justify-center gap-2"
+            >
+                <i class="fas fa-redo-alt"></i>
+                Reset Account
+            </button>
+
+            <div class="mt-6 text-center text-xs text-gray-400 border-t pt-4">
+                <i class="fas fa-shield-alt mr-1"></i> Demo: admin / 123
+            </div>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                users: [{ username: 'admin', password: '123' }],
+                credentials: { username: '', password: '' },
+                isLoggedIn: false,
+                attempts: 0,
+                maxAttempts: 3,
+                errorMessage: '',
+                loginMessage: '',
+                currentUser: '',
+                capsUsername: '',
+                guessNumber: null,
+                guessMessage: '',
+                isGuessing: false,
+                isLoading: false,
+                
+                loginFields: [
+                    { icon: 'fa-user', label: 'Username', type: 'text', model: 'username', placeholder: 'Enter username' },
+                    { icon: 'fa-lock', label: 'Password', type: 'password', model: 'password', placeholder: 'Enter password' }
+                ]
+            },
+            computed: {
+                isBlocked() {
+                    return this.attempts >= this.maxAttempts && !this.isLoggedIn;
+                },
+                headerIcon() {
+                    return this.isLoggedIn ? 'fa-smile-wink' : 'fa-lock';
+                },
+                headerTitle() {
+                    return this.isLoggedIn ? 'Welcome!' : 'Login Portal';
+                },
+                buttonClass() {
+                    return this.isBlocked || this.isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 text-white';
+                },
+                guessButtonClass() {
+                    return this.isGuessing || !this.guessNumber ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 text-white';
+                },
+                messageClass() {
+                    return this.attempts >= this.maxAttempts ? 'bg-red-50 text-red-600' : 'bg-red-50 text-red-500';
+                },
+                messageIcon() {
+                    return this.attempts >= this.maxAttempts ? 'fa-ban' : 'fa-times-circle';
+                }
+            },
+            methods: {
+                login() {
+                    if (this.isBlocked) return;
+                    
+                    this.isLoading = true;
+                    this.errorMessage = '';
+                    
+                    setTimeout(() => {
+                        const user = this.users.find(u => 
+                            u.username === this.credentials.username && 
+                            u.password === this.credentials.password
+                        );
+                        
+                        if (user) {
+                            Object.assign(this, {
+                                isLoggedIn: true,
+                                currentUser: this.credentials.username,
+                                capsUsername: this.credentials.username.toUpperCase(),
+                                attempts: 0,
+                                credentials: { username: '', password: '' }
+                            });
+                        } else {
+                            this.attempts++;
+                            this.errorMessage = this.attempts >= this.maxAttempts ? 
+                                'Maximum retries reached! Account blocked.' : 
+                                'Wrong username or password!';
+                        }
+                        
+                        this.isLoading = false;
+                    }, 500);
+                },
+                
+                guess() {
+                    if (!this.guessNumber) return;
+                    
+                    this.isGuessing = true;
+                    const steps = [
+                        { msg: '🔍 Trying possible numbers...', delay: 3000 },
+                        { msg: '⏳ ...', delay: 2000 },
+                        { msg: '🤔 Wait a sec!', delay: 2000 },
+                        { msg: `🎯 I Think it's ${this.guessNumber} lol?`, delay: 0 }
+                    ];
+                    
+                    this.runGuessSteps(steps);
+                },
+                
+                runGuessSteps(steps) {
+                    if (steps.length === 0) {
+                        this.isGuessing = false;
+                        return;
+                    }
+                    
+                    const step = steps.shift();
+                    this.guessMessage = step.msg;
+                    
+                    if (step.delay > 0) {
+                        setTimeout(() => this.runGuessSteps(steps), step.delay);
+                    } else {
+                        this.runGuessSteps(steps);
+                    }
+                },
+                
+                reset() {
+                    Object.assign(this, {
+                        isLoggedIn: false,
+                        attempts: 0,
+                        errorMessage: '',
+                        loginMessage: '',
+                        guessMessage: '',
+                        guessNumber: null,
+                        currentUser: '',
+                        capsUsername: ''
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
