@@ -2,26 +2,6 @@
 #include <string>
 using namespace std;
 
-#include <algorithm>
-#include <unistd.h>
-
-void greet(string name) {
-    string caps = name;
-    transform(caps.begin(), caps.end(), caps.begin(), ::toupper);
-    int number;
-    cout << "Hello, " << caps << "!" << endl;
-    cout << "Input any number i try to gues: " << endl;
-    cin.ignore();
-    cin >> number;
-    cout << "Trying possible numbers..." << endl;
-    sleep(3);
-    cout << "..." << endl;
-    sleep(2);
-    cout << "Wait a sec!" << endl;
-    sleep(2);
-    cout << "I Think its " << number << " lol?";
-}
-
 int main() {
     int max_array = 1;
     string username[max_array] = {"admin"};
@@ -50,7 +30,6 @@ int main() {
     
         if (login) {
             cout << "Login Success! ";
-            greet(userinput);
         } else {
             cout << "wrong pass or user! ";
             tries++;
