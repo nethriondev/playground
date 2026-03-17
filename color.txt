@@ -1,0 +1,91 @@
+ANSI COLOR CODES - TEXT FORMAT
+================================
+
+RESET
+------
+\033[0m  - Reset all attributes
+
+TEXT COLORS (Normal)
+--------------------
+\033[30m - Black
+\033[31m - Red
+\033[32m - Green
+\033[33m - Yellow
+\033[34m - Blue
+\033[35m - Magenta
+\033[36m - Cyan
+\033[37m - White
+
+TEXT COLORS (Bright)
+--------------------
+\033[90m - Bright Black (Gray)
+\033[91m - Bright Red
+\033[92m - Bright Green
+\033[93m - Bright Yellow
+\033[94m - Bright Blue
+\033[95m - Bright Magenta
+\033[96m - Bright Cyan
+\033[97m - Bright White
+
+BACKGROUND COLORS (Normal)
+--------------------------
+\033[40m - Black Background
+\033[41m - Red Background
+\033[42m - Green Background
+\033[43m - Yellow Background
+\033[44m - Blue Background
+\033[45m - Magenta Background
+\033[46m - Cyan Background
+\033[47m - White Background
+
+BACKGROUND COLORS (Bright)
+--------------------------
+\033[100m - Bright Black Background
+\033[101m - Bright Red Background
+\033[102m - Bright Green Background
+\033[103m - Bright Yellow Background
+\033[104m - Bright Blue Background
+\033[105m - Bright Magenta Background
+\033[106m - Bright Cyan Background
+\033[107m - Bright White Background
+
+TEXT STYLES
+-----------
+\033[1m - Bold
+\033[2m - Dim
+\033[3m - Italic
+\033[4m - Underline
+\033[5m - Blink (slow)
+\033[6m - Blink (fast)
+\033[7m - Reverse (invert colors)
+\033[8m - Hidden
+\033[9m - Strikethrough
+
+COMBINATIONS (Examples)
+-----------------------
+\033[1;31m     - Bold Red
+\033[4;34m     - Underline Blue
+\033[1;4;31m   - Bold Underline Red
+\033[41;37m    - Red Background with White Text
+\033[1;33;44m  - Bold Yellow Text on Blue Background
+
+USAGE EXAMPLE
+-------------
+cout << "\033[31mThis is red\033[0m" << endl;
+cout << "\033[1;32mThis is bold green\033[0m" << endl;
+cout << "\033[44;33mYellow on blue\033[0m" << endl;
+
+256 COLORS (if supported)
+-------------------------
+\033[38;5;{code}m  - Foreground (0-255)
+\033[48;5;{code}m  - Background (0-255)
+
+Example: \033[38;5;196m - Bright Red foreground
+Example: \033[48;5;21m  - Blue background
+
+TRUECOLOR (24-bit, if supported)
+--------------------------------
+\033[38;2;{r};{g};{b}m  - Foreground RGB
+\033[48;2;{r};{g};{b}m  - Background RGB
+
+Example: \033[38;2;255;100;0m - Orange text

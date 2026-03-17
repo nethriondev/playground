@@ -39,7 +39,7 @@ int main() {
             
              if (login) {
                    cout << "Welcome! " << user << endl;
-                   attempt = 0;
+                   break;
                } else {
                    cout << "username or password is wrong" << endl;
                    attempt++; // +1 everytime magkamali ta
