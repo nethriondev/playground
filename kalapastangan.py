@@ -6,8 +6,8 @@ print("\n\n\n")
 lyrics = [
     ("Oh, ooh", 4.6, 0.49),
     ("Mamamatay akong nakangiti", 1.22, 0.13),
-    ("Kapag ikaw ang nasa aking tabi", 1.21, 0.13),
-    ("Mabubuhay akong nagsisisi", 1.15, 0.12),
+    ("Kapag ikaw ang nasa aking tabi", 1.1, 0.13),
+    ("Mabubuhay akong nagsisisi", 1.1, 0.12),
     ("Kapag isang araw hindi kita mapapangiti", 1.13, 0.10),
     ("Kalapastangan ang 'di ka ibigin'", 1.13, 0.10),
     ("Kalokohan ang 'di ka isipin'", 1.13, 0.10),

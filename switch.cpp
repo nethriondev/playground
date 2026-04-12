@@ -3,134 +3,85 @@
 using namespace std;
 
 int main() {
-    const int limit = 5;
-    string name[limit];
-    int age[limit], grade[limit], count = 0, choice;  
+    string name[5];
+    int id[5], grade[5], choice, count = 0;
     
     do {
-        cout << "\n===MENU===\n1. Add Student\n2. View Students\n3. Search Student\n4. Delete Students\n5. Edit Student\n6. Exit\nChoice: ";
-        cin >> choice; 
+        cout << "==MENU==\n";
+        cout << "1. Add\n2. View\n3. Edit\n4. Delete\n5. Search\n6. Exit\n";
+        cout << "Select Choice: ";
+        cin >> choice;
         cin.ignore();
         system("clear");
         
-        switch(choice) {
-            case 1: 
-                if (count < limit) {
-                    cout << "name: ";
-                    getline(cin, name[count]);
-                    cout << "age: "; 
-                    cin >> age[count];
-                    cout << "grade: "; 
-                    cin >> grade[count];
-                    cin.ignore(); 
-                    cout << "Student Added!\n";
-                    count++;
-                } else {
-                    cout << "Database is Full!\n";
-                }
-                break;           
-                
-            case 2:
-                cout << "\n===Student List===\n";
-                if (count == 0) {
-                    cout << "No Students Found!\n";
-                } else {
-                    for (int i = 0; i < count; i++) {
-                        cout << "\n[" << i + 1 << "]\nName: " << name[i] 
-                             << "\nAge: " << age[i] 
-                             << "\nGrade: " << grade[i] << "\n\n";
-                    }
-                }
-                break;             
-                
-            case 3: {
-                if (count == 0) {
-                    cout << "Database is Empty!\n";
-                    break;
-                }
-                string search;
-                cout << "Search name: ";
-                getline(cin, search);
-                bool found = false;
-                for (int i = 0; i < count; i++) {
-                    if (search == name[i]) {
-                        cout << "\n===Student Found===\n";
-                        cout << "\n[" << i + 1 << "]\nName: " << name[i] 
-                             << "\nAge: " << age[i] 
-                             << "\nGrade: " << grade[i] << "\n";
-                        found = true;
-                    }
-                }
-                if (!found) {
-                    cout << "Student name not Found\n";
-                }
-                break;
+        if (choice == 1) {
+            if (count < 5) {
+                cout << "Enter Name: ";
+                getline(cin, name[count]);
+                cout << "Enter Id: ";
+                cin >> id[count];
+                cout << "Enter Grade: ";
+                cin >> grade[count];
+                count++;
+                cout << "Added!\n";
+            } else {
+                cout << "Database is Full!\n";
             }
-            
-            case 4: {
-                string deleteName;
-                bool found = false;
-                cout << "Enter name to delete: ";
-                getline(cin, deleteName);
-
-                for(int i = 0; i < count; i++) {
-                    if(name[i] == deleteName){
-                        for(int j = i; j < count - 1; j++) {
-                            name[j] = name[j+1];
-                            age[j] = age[j+1];
-                            grade[j] = grade[j+1];
-                        }
-                        count--;
-                        cout << "Deleted successfully!" << endl;
-                        found = true;
-                        break;
-                    }
-                }
-
-                if(!found){
-                    cout << "Student not found!" << endl;
-                }
-                break;
-            } 
-            
-            case 5: {
-                if (count == 0) {
-                    cout << "No students to edit!\n";
-                    break;
-                }
-                int select; // declare tag pilian sa student array
-                cout << "Select Student (1-" << count << "): ";
-                cin >> select; 
-                
-                // optional rani
-                if (select < 1 || select > count) {
-                    cout << "Invalid selection!\n";
-                    cin.ignore();
-                    break;
-                }
-                
-                cin.ignore();
-                // sample unsaon pag edit
-                cout << "New Name: ";
-                getline(cin, name[select-1]); // minus ug wan para mo match sa array since ag array ga start sa element 0
-                cout << "New Age: ";
-                cin >> age[select-1];
-                cout << "New Grade: ";
-                cin >> grade[select-1];
-                cin.ignore();
-                cout << "Student Updated!\n";
-                break;
-            }
-            
-            case 6:
-                cout << "Exiting...\n";
-                break;
-                
-            default: 
-                cout << "Invalid Choices select only from 1 to 6\n";
-                break;
         }
-    } while (choice != 6);    
+        else if (choice == 2) {
+            for (int i = 0; i < count; i++) {
+                cout << "Index: " << i + 1 << endl;
+                cout << "Name: " << name[i] << endl;
+                cout << "ID: " << id[i] << endl;
+                cout << "Grade: " << grade[i] << endl;
+            }
+        }
+        else if (choice == 3) {
+            int select;
+            cout << "Select User from 1 - 5 to Edit: ";
+            cin >> select;
+            cin.ignore();
+            cout << "Enter new Name: ";
+            getline(cin, name[select-1]);
+            cout << "Enter new ID: ";
+            cin >> id[select-1];
+            cout << "Enter new Grade: ";
+            cin >> grade[select-1];
+            cout << "User Updated!\n";
+        }
+        else if (choice == 4) {
+            int select2;
+            cout << "Select User from 1 - 5 to Delete: ";
+            cin >> select2;
+            for (int i = select2-1; i < count - 1; i++) {
+                name[i] = name[i+1];
+                id[i] = id[i+1];
+                grade[i] = grade[i+1];
+            }
+            count--;
+            cout << "User Deleted!\n";
+        }
+        else if (choice == 5) {
+            string search;
+            cout << "Search Name: ";
+            getline(cin, search);
+            bool found = false;
+            for (int i = 0; i < count; i++) {
+                if (search == name[i]) {
+                    cout << "Name: " << name[i] << endl;
+                    cout << "ID: " << id[i] << endl;
+                    cout << "Grade: " << grade[i] << endl;
+                    found = true;
+                }
+            }
+            if (found) {
+                cout << "Search Found!\n";
+            } else {
+                cout << "Not Found!\n";
+            }
+        }
+        
+    } while (choice != 6);
     
     return 0;
 }

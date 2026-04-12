@@ -39,7 +39,7 @@ int main() {
             case 3: 
                 if (count == 0) { cout << "No Records Yet!\n"; break; }
                 int deluser;
-                cout << "Select user to delete: ";
+                cout << "Select user to delete: "; // 1
                 cin >> deluser;
                 for (int i = deluser-1; i < count - 1; i++) {
                     name[i] = name[i+1];
